@@ -8,7 +8,6 @@ from torchvision import transforms, datasets
 import torch.optim as optim
 from tqdm import tqdm
 from torchsummary import summary
-from MedMamba import VSSM as medmamba # import model
 
 
 def main():
@@ -54,8 +53,8 @@ def main():
     print("using {} images for training, {} images for validation with {} classes".format(train_num,
                                                                            val_num, len(flower_list)))
 
-    model_name = "medmamba"
-    net = medmamba(num_classes=len(flower_list))
+    model_name = "VSSM"
+    net = VSSM(num_classes=len(flower_list))
     net.to(device)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
