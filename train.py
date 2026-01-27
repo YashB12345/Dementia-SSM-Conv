@@ -52,10 +52,10 @@ def main():
                                                   batch_size=batch_size, shuffle=False,
                                                   num_workers=nw)
     print("using {} images for training, {} images for validation with {} classes".format(train_num,
-                                                                           val_num, len(flower_list)))
+                                                                           val_num, len(class_to_idx)))
 
     model_name = "VSSM"
-    net = VSSM(num_classes=len(flower_list))
+    net = VSSM(num_classes=len(class_to_idx))
     net.to(device)
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
