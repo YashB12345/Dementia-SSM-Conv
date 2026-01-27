@@ -8,7 +8,7 @@ from torchvision import transforms, datasets
 import torch.optim as optim
 from tqdm import tqdm
 from torchsummary import summary
-
+from MedMamba import VSSM 
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -29,8 +29,8 @@ def main():
                                          transform=data_transform["train"])
     train_num = len(train_dataset)
 
-    flower_list = train_dataset.class_to_idx
-    cla_dict = dict((val, key) for key, val in flower_list.items())
+    class_to_idx = train_dataset.class_to_idx
+    cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
     json_str = json.dumps(cla_dict, indent=4)
     with open('class_indices.json', 'w') as json_file:
