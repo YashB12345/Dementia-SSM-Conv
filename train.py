@@ -32,7 +32,7 @@ def main():
     train_x, test_x, train_y, test_y = train_test_split(train_dataset[0], train_dataset[1], test_size = 0.1)
 
     train_num = len(train_x)
-    train_dataset = train_x, train_y 
+
     class_to_idx = train_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
@@ -43,7 +43,7 @@ def main():
     batch_size = 32
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
     print('Using {} dataloader workers every process'.format(nw))
-
+    train_dataset = train_x, train_y 
     train_loader = torch.utils.data.DataLoader(train_dataset,
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=nw)
