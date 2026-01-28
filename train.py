@@ -24,7 +24,7 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    DATA_SET_PATH = '/kaggle/input/adni1-complete-3yr-1-5t-3244samples'
+    DATA_SET_PATH = '/kaggle/input/adni1-complete-3yr-1-5t-3244samples-axial'
 
     train_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
