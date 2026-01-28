@@ -9,7 +9,7 @@ import torch.optim as optim
 from tqdm import tqdm
 from torchsummary import summary
 from MedMamba import VSSM 
-
+from sklearn.model_selection import train_test_split
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -28,8 +28,11 @@ def main():
 
     train_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
-    train_num = len(train_dataset)
 
+    train_x, test_x, train_y, test_y = train_test_split(train_dataset[0], train_dataset[1], test_size = 0.1)
+
+    train_num = len(train_x)
+    train_dataset = train_x, train_y 
     class_to_idx = train_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
@@ -45,8 +48,8 @@ def main():
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=nw)
 
-    validate_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
-                                            transform=data_transform["val"])
+    #validate_dataset = datasets.ImageFolder(root=DATA_SET_PATH,transform=data_transform["val"])
+    validate_dataset = test_x,test_y
     val_num = len(validate_dataset)
     validate_loader = torch.utils.data.DataLoader(validate_dataset,
                                                   batch_size=batch_size, shuffle=False,
