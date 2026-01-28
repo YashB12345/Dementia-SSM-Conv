@@ -10,6 +10,7 @@ from tqdm import tqdm
 from torchsummary import summary
 from MedMamba import VSSM 
 from sklearn.model_selection import train_test_split
+from torch.utils.data import TensorDataset
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -43,13 +44,13 @@ def main():
     batch_size = 32
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
     print('Using {} dataloader workers every process'.format(nw))
-    train_dataset = train_x, train_y 
+    train_dataset = TensorDataset(train_x, train_y )
     train_loader = torch.utils.data.DataLoader(train_dataset,
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=nw)
 
     #validate_dataset = datasets.ImageFolder(root=DATA_SET_PATH,transform=data_transform["val"])
-    validate_dataset = test_x,test_y
+    validate_dataset = TensorDataset(test_x,test_y)
     val_num = len(validate_dataset)
     validate_loader = torch.utils.data.DataLoader(validate_dataset,
                                                   batch_size=batch_size, shuffle=False,
