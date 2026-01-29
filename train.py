@@ -29,8 +29,8 @@ def main():
 
     train_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
-
-    train_x, test_x, train_y, test_y = train_test_split(train_dataset[0], train_dataset[1], test_size = 0.1)
+    
+    train_x, test_x, train_y, test_y = train_test_split(train_dataset.samples, train_dataset.targets, test_size = 0.1)
 
     train_num = len(train_x)
 
