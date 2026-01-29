@@ -8,9 +8,8 @@ from torchvision import transforms, datasets
 import torch.optim as optim
 from tqdm import tqdm
 from torchsummary import summary
-from MedMamba import VSSM 
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
+from MedMamba import VSSM
+from torch.utils.data import Dataset, DataLoader, random_split
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -27,14 +26,11 @@ def main():
 
     DATA_SET_PATH = '/kaggle/input/adni1-complete-3yr-1-5t-3244samples-axial'
 
-    train_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
+    full_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
     
-    train_x, test_x, train_y, test_y = train_test_split(train_dataset.samples, train_dataset.targets, test_size = 0.1)
 
-    train_num = len(train_x)
-
-    class_to_idx = train_dataset.class_to_idx
+    class_to_idx = full_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
     json_str = json.dumps(cla_dict, indent=4)
@@ -44,18 +40,42 @@ def main():
     batch_size = 32
     nw = min([os.cpu_count(), batch_size if batch_size > 1 else 0, 8])  # number of workers
     print('Using {} dataloader workers every process'.format(nw))
-    train_dataset = tf.data.Dataset.from_tensor_slices(train_x, train_y )
-    train_loader = torch.utils.data.DataLoader(train_dataset,
+
+    #train_dataset = tf.data.Dataset.from_tensor_slices(train_x, train_y )
+    train_loader = torch.utils.data.DataLoader(full_dataset,
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=nw)
 
+    # 2. Define split ratios and calculate lengths
+    train_size = int(0.8 * len(full_dataset))
+    val_size = int(0.1 * len(full_dataset))
+    test_size = len(full_dataset) - train_size - val_size # Adjust for any rounding issues
+
+    # Ensure reproducibility with a fixed seed
+    torch.manual_seed(42)
+
+    # 3. Perform the random split
+    train_dataset, val_dataset, test_dataset = random_split(
+        full_dataset, [train_size, val_size, test_size]
+    )
+
+    # 4. Create DataLoaders for each split
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    #val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+    # Verify the sizes
+    print(f"Train set size: {len(train_dataset)}")
+    print(f"Validation set size: {len(val_dataset)}")
+    print(f"Test set size: {len(test_dataset)}")
+
     #validate_dataset = datasets.ImageFolder(root=DATA_SET_PATH,transform=data_transform["val"])
-    validate_dataset = tf.data.Dataset.from_tensor_slices(test_x,test_y)
-    val_num = len(validate_dataset)
-    validate_loader = torch.utils.data.DataLoader(validate_dataset,
+
+    val_num = len(val_dataset)
+    validate_loader = torch.utils.data.DataLoader(val_dataset,
                                                   batch_size=batch_size, shuffle=False,
                                                   num_workers=nw)
-    print("using {} images for training, {} images for validation with {} classes".format(train_num,
+    print("using {} images for training, {} images for validation with {} classes".format(train_dataset,
                                                                            val_num, len(class_to_idx)))
 
     model_name = "VSSM"
