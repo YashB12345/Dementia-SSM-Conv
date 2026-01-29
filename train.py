@@ -47,7 +47,7 @@ def main():
                                                num_workers=nw)
 
     # 2. Define split ratios and calculate lengths
-    train_size = int(0.8 * len(full_dataset))
+    train_size = int(0.9 * len(full_dataset))
     val_size = int(0.1 * len(full_dataset))
     test_size = len(full_dataset) - train_size - val_size # Adjust for any rounding issues
 
@@ -75,7 +75,7 @@ def main():
     validate_loader = torch.utils.data.DataLoader(val_dataset,
                                                   batch_size=batch_size, shuffle=False,
                                                   num_workers=nw)
-    print("using {} images for training, {} images for validation with {} classes".format(train_dataset,
+    print("using {} images for training, {} images for validation with {} classes".format(len(train_dataset),
                                                                            val_num, len(class_to_idx)))
 
     model_name = "VSSM"
