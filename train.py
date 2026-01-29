@@ -24,7 +24,7 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    DATA_SET_PATH = '/kaggle/input/adni1-complete-3yr-1-5t-3244samples-axial'
+    DATA_SET_PATH = '/kaggle/input/higher-loss-precision-with-3244samples-sagittal'
 
     full_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -106,7 +106,7 @@ def main():
             # print statistics
             running_loss += loss.item()
 
-            train_bar.desc = "train epoch[{}/{}] loss:{:.3f}".format(epoch + 1,
+            train_bar.desc = "train epoch[{}/{}] loss:{:.7f}".format(epoch + 1,
                                                                      epochs,
                                                                      loss)
 
@@ -122,7 +122,7 @@ def main():
                 acc += torch.eq(predict_y, val_labels.to(device)).sum().item()
 
         val_accurate = acc / val_num
-        print('[epoch %d] train_loss: %.3f  val_accuracy: %.3f' %
+        print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
               (epoch + 1, running_loss / train_steps, val_accurate))
 
         if val_accurate > best_acc:
