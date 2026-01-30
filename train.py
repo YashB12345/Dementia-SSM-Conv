@@ -37,7 +37,7 @@ def main():
 
     full_dataset = ConcatDataset([orig_dataset, flip_dataset])
 
-    class_to_idx = full_dataset.class_to_idx
+    class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
     json_str = json.dumps(cla_dict, indent=4)
