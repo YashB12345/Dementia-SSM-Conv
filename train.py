@@ -19,15 +19,22 @@ def main():
         "train": transforms.Compose([transforms.Resize((224, 224)),
                                      transforms.ToTensor(),
                                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
+         "flip": transforms.Compose([transforms.RandomResizedCrop(224),
+                                     transforms.RandomHorizontalFlip(p=1),
+                                     transforms.ToTensor(),
+                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
         "val": transforms.Compose([transforms.Resize((224, 224)),
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
     DATA_SET_PATH = '/kaggle/input/higher-loss-precision-with-3244samples-sagittal'
 
-    full_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
+    orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
-    
+    flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
+                                         transform=data_transform["flip"])
+
+    full_dataset = ConcatDataset([orig_dataset, flip_dataset])
 
     class_to_idx = full_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
