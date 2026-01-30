@@ -17,7 +17,6 @@ def main():
 
     data_transform = {
         "train": transforms.Compose([transforms.Resize((224, 224)),
-                                     transforms.RandomHorizontalFlip(),
                                      transforms.ToTensor(),
                                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
         "val": transforms.Compose([transforms.Resize((224, 224)),
@@ -86,7 +85,7 @@ def main():
 
     #summary(net, input_size=(1, 224, 224))
 
-    epochs = 100
+    epochs = 250
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
