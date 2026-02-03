@@ -28,7 +28,7 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    DATA_SET_PATH = '/kaggle/input/adni1-3yr-1-5t-3244samples-sagittal-25'
+    DATA_SET_PATH = '/kaggle/input/adni1-3yr-1-5t-3244samples-sagittalplus25'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -93,7 +93,7 @@ def main():
 
     #summary(net, input_size=(1, 224, 224))
 
-    epochs = 200
+    epochs = 100
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
