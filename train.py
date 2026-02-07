@@ -21,13 +21,11 @@ def main():
                                      transforms.Resize((224, 224)),
                                      transforms.ToTensor(),
                                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
-         "flip": transforms.Compose([transforms.Grayscale(num_output_channels=1), # Convert to grayscale
-                                     transforms.RandomResizedCrop(224),
+         "flip": transforms.Compose([  transforms.RandomResizedCrop(224),
                                      transforms.RandomHorizontalFlip(p=1),
                                      transforms.ToTensor(),
                                      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
-        "val": transforms.Compose([transforms.Grayscale(num_output_channels=1), # Convert to grayscale
-                                   transforms.Resize((224, 224)),
+        "val": transforms.Compose([transforms.Resize((224, 224)),
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
