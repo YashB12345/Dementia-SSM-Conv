@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-
+import sys
 import torch
 import torch.nn as nn
 from torchvision import transforms, datasets
@@ -32,6 +32,10 @@ def main():
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
     DATA_SET_PATH = '/kaggle/input/higher-loss-precision-with-3244samples-sagittal'
+
+    if( sys.argv[1] == '--train' )
+        DATA_SET_PATH = sys.argv[2]
+        print('Final dataset in use' + DATA_SET_PATH)
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
