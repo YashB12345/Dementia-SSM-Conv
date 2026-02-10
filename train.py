@@ -82,7 +82,7 @@ def main():
     print(f"Train set size: {len(train_dataset)}")
     print(f"Validation set size: {len(val_dataset)}")
     print(f"Test set size: {len(test_dataset)}")
-    print(f"DataSetshape: {train_dataset.shape}")
+    #print(f"DataSetshape: {train_dataset.shape}")
     
     #validate_dataset = datasets.ImageFolder(root=DATA_SET_PATH,transform=data_transform["val"])
 
