@@ -37,6 +37,8 @@ def main():
 
     full_dataset = ConcatDataset([orig_dataset, flip_dataset])
 
+    full_dataset = full_dataset.mean(dim=1, keepdim=True)
+
     class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
     # write dict into json file
