@@ -761,6 +761,6 @@ medmamba_t = VSSM(depths=[2, 2, 4, 2],dims=[96,192,384,768],num_classes=6).to("c
 medmamba_s = VSSM(depths=[2, 2, 8, 2],dims=[96,192,384,768],num_classes=6).to("cuda")
 medmamba_b = VSSM(depths=[2, 2, 12, 2],dims=[128,256,512,1024],num_classes=6).to("cuda")
 
-data = torch.randn(1,1,224,224).to("cuda")
+data = torch.randn(1,3,224,224).to("cuda")
 
 print(medmamba_t(data).shape)
