@@ -28,7 +28,7 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
 
-    DATA_SET_PATH = '/kaggle/input/higher-loss-precision-with-3244samples-sagittal'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/higher-loss-precision-with-3244samples-sagittal'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
