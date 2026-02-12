@@ -35,9 +35,9 @@ def main():
     flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    full_dataset = ConcatDataset([orig_dataset, flip_dataset])
+    full_dataset = ConcatDataset([orig_dataset.mean(dim=1, keepdim=True), flip_dataset.mean(dim=1, keepdim=True)])
 
-    full_dataset = full_dataset.mean(dim=1, keepdim=True)
+    #full_dataset = full_dataset.mean(dim=1, keepdim=True)
 
     class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
