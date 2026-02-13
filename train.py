@@ -35,7 +35,7 @@ def main():
     flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    full_dataset = ConcatDataset([orig_dataset.mean(dim=1, keepdim=True), flip_dataset.mean(dim=1, keepdim=True)])
+    full_dataset = ConcatDataset([orig_dataset, flip_dataset])
 
     #full_dataset = full_dataset.mean(dim=1, keepdim=True)
 
@@ -67,6 +67,10 @@ def main():
     train_dataset, val_dataset, test_dataset = random_split(
         full_dataset, [train_size, val_size, test_size]
     )
+
+    train_dataset = train_dataset.mean(dim=1, keepdim=True)
+    val_dataset = val_dataset.mean(dim=1, keepdim=True)
+    #test_dataset = test_dataset.mean(dim=1, keepdim=True)
 
     # 4. Create DataLoaders for each split
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
