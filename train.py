@@ -110,6 +110,7 @@ def main():
         train_bar = tqdm(train_loader, file=sys.stdout)
         for step, data in enumerate(train_bar):
             images, labels = data
+            print(type(images))
             optimizer.zero_grad()
             outputs = net(images.to(device))
             loss = loss_function(outputs, labels.to(device))
