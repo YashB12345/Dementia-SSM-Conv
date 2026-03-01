@@ -16,17 +16,18 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
 
-    data_transform = {
+   data_transform = {
         "train": transforms.Compose([transforms.Resize((224, 224)),
                                      transforms.ToTensor(),
-                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
-         "flip": transforms.Compose([  transforms.RandomResizedCrop(224),
+                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
+         "flip": transforms.Compose([  transforms.Resize((224, 224)),
                                      transforms.RandomHorizontalFlip(p=1),
                                      transforms.ToTensor(),
-                                     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]),
+                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
         "val": transforms.Compose([transforms.Resize((224, 224)),
                                    transforms.ToTensor(),
-                                   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])}
+                                   transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
+
 
     DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-2273-1-5t-1yr-sagittal-25-skull-stripped-3'
 
