@@ -29,7 +29,7 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-543-1-5t-sagittal-skull-strip-antspynet'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-891-1-5t-sagittal-skull-strip-antspynet'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
