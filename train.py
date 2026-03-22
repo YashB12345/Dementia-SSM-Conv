@@ -29,7 +29,7 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-891-1-5t-axial-antspynet-flirt-n4correct'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1571-1-5t-axial-antspynet-flirt-n4correct'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -94,7 +94,7 @@ def main():
 
     #summary(net, input_size=(1, 224, 224))
 
-    epochs = 100
+    epochs = 150
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
