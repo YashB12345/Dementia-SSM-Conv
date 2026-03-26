@@ -12,6 +12,14 @@ from torchsummary import summary
 from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
 
+# Define the threshold (e.g., 10 KB in bytes)
+MIN_SIZE_BYTES = 10 * 1024
+
+def check_image_size(path):
+    # Check if the file exists and is larger than the minimum size
+    return os.path.isfile(path) and os.path.getsize(path) > MIN_SIZE_BYTES
+
+
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
@@ -29,11 +37,13 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1571-1-5t-axial-antspynet-flirt-n4correct'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-phase1-5class'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
+                                        is_valid_file=check_image_size,  # Uses the filter
                                          transform=data_transform["train"])
     flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
+                                        is_valid_file=check_image_size,  # Uses the filter
                                          transform=data_transform["flip"])
 
     full_dataset = ConcatDataset([orig_dataset, flip_dataset])
