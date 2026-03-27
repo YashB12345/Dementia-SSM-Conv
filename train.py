@@ -37,7 +37,7 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-phase1-5class'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-phase1-5class/sagittal'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                         is_valid_file=check_image_size,  # Uses the filter
