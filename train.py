@@ -129,9 +129,27 @@ def main():
                 predict_y = torch.max(outputs, dim=1)[1]
                 acc += torch.eq(predict_y, val_labels.to(device)).sum().item()
 
+            # Find indices where prediction != ground truth
+        incorrect_indices = (predict_y != val_labels).nonzero(as_tuple=True)[0]
+
         val_accurate = acc / val_num
         print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
               (epoch + 1, running_loss / train_steps, val_accurate))
+        
+        print(f"Total evaluated {len(images)} and failed {len(incorrect_indices)}")
+        
+        for idx in incorrect_indices:
+            for i, item in enumerate(misclassified_images):
+            
+                # Store (image, predicted_label, actual_label)
+                img = images[idx].cpu()
+                misclassified_images.append({
+                    "img": img,
+                    "pred": class_names[preds[idx].item()],
+                    "actual": class_names[labels[idx].item()]
+                })
+
+        print(f"Pred: {item['pred']}\nActual: {item['actual']}", color='red')
 
         if val_accurate > best_acc:
             best_acc = val_accurate
