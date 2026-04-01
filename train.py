@@ -142,7 +142,7 @@ def main():
             for i, item in enumerate(misclassified_images):
             
                 # Store (image, predicted_label, actual_label)
-                img = images[idx].cpu()
+                img = images[idx].to(device) #To resolve Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
                 misclassified_images.append({
                     "img": img,
                     "pred": class_names[preds[idx].item()],
