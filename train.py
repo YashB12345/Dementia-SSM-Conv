@@ -81,7 +81,7 @@ def main():
         targets.append(label)
     
     targets = np.array(targets)
-    skf = StratifiedKFold(n_splits=1, shuffle=True, random_state=42)
+    skf = StratifiedKFold(n_splits=2, shuffle=True, random_state=42)
 
     # Verify the sizes
     #print(f"Train set size: {len(train_dataset)}")
