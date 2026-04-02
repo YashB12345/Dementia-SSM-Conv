@@ -97,11 +97,11 @@ def main():
     for fold, (train_idx, val_idx) in enumerate(skf.split(np.zeros(len(targets)), targets)):
         print(f"\n===== Fold {fold+1} =====")
     
-        train_subset = torch.utils.data.Subset(dataset, train_idx)
-        val_subset = torch.utils.data.Subset(dataset, val_idx)
+        train_subset = torch.utils.data.Subset(train_dataset, train_idx)
+        val_subset = torch.utils.data.Subset(val_dataset, val_idx)
     
-        train_loader = DataLoader(train_subset, batch_size=..., shuffle=True)
-        val_loader = DataLoader(val_subset, batch_size=..., shuffle=False)
+        train_loader = DataLoader(train_subset, batch_size=32, shuffle=True)
+        val_loader = DataLoader(val_subset, batch_size=32, shuffle=False)
     
         model_name = "VSSM"
         net = VSSM(num_classes=len(class_to_idx))
