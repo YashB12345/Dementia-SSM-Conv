@@ -94,17 +94,17 @@ def main():
     #validate_loader = torch.utils.data.DataLoader(val_dataset,batch_size=batch_size, shuffle=False,num_workers=nw)
     #print("using {} images for training, {} images for validation with {} classes".format(len(train_dataset),val_num, len(class_to_idx)))
 
-    print("Dataset size:", len(dataset))
+    print("Dataset size:", len(full_dataset))
     print("Targets size:", len(targets))
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(np.zeros(len(targets)), targets)):
-        print(f"Fold {fold}")
+        print(f"Fold {fold} pre print object details")
         print("Train idx max:", max(train_idx))
         print("Val idx max:", max(val_idx))
     
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(np.zeros(len(targets)), targets)):
-        print(f"\n===== Fold {fold+1} =====")
+        print(f"\n=====Starting  Fold {fold+1} =====")
     
         train_subset = torch.utils.data.Subset(train_dataset, train_idx)
         val_subset = torch.utils.data.Subset(val_dataset, val_idx)
