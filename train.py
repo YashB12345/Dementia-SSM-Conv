@@ -76,12 +76,12 @@ def main():
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     
     targets = []
-    for i in range(len(full_dataset)):
+    for i in range((len(full_dataset)//5)*5):
         _, label = full_dataset[i]
         targets.append(label)
     
     targets = np.array(targets)
-    skf = StratifiedKFold(n_splits=2, shuffle=True, random_state=42)
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
     # Verify the sizes
     #print(f"Train set size: {len(train_dataset)}")
