@@ -81,7 +81,7 @@ def main():
         targets.append(label)
     
     targets = np.array(targets)
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    skf = StratifiedKFold(n_splits=1, shuffle=True, random_state=42)
 
     # Verify the sizes
     #print(f"Train set size: {len(train_dataset)}")
@@ -93,6 +93,15 @@ def main():
     #val_num = len(val_dataset)
     #validate_loader = torch.utils.data.DataLoader(val_dataset,batch_size=batch_size, shuffle=False,num_workers=nw)
     #print("using {} images for training, {} images for validation with {} classes".format(len(train_dataset),val_num, len(class_to_idx)))
+
+    print("Dataset size:", len(dataset))
+    print("Targets size:", len(targets))
+
+    for fold, (train_idx, val_idx) in enumerate(skf.split(np.zeros(len(targets)), targets)):
+        print(f"Fold {fold}")
+        print("Train idx max:", max(train_idx))
+        print("Val idx max:", max(val_idx))
+    
 
     for fold, (train_idx, val_idx) in enumerate(skf.split(np.zeros(len(targets)), targets)):
         print(f"\n===== Fold {fold+1} =====")
