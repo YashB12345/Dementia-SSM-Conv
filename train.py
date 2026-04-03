@@ -2,14 +2,16 @@ import os
 import sys
 import json
 
+import numpy as np
+from sklearn.model_selection import StratifiedKFold
 import torch
 import torch.nn as nn
 from torchvision import transforms, datasets
-from torch.utils.data import ConcatDataset
+from torch.utils.data import ConcatDataset, Subset
 import torch.optim as optim
 from tqdm import tqdm
 from torchsummary import summary
-from MedMamba import VSSM
+#from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
 
 def main():
@@ -29,7 +31,7 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1-5t-axial-5to5-antspynet-flirt-n4correct'
+    DATA_SET_PATH = 'C:\\Users\\Common\\PythonProjects\\Alzheimers\\transforms\\data'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -87,55 +89,91 @@ def main():
                                                                            val_num, len(class_to_idx)))
 
     model_name = "VSSM"
-    net = VSSM(num_classes=len(class_to_idx))
-    net.to(device)
+    #net = VSSM(num_classes=len(class_to_idx))
+    #net.to(device)
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters(), lr=0.0001)
+    #optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
     #summary(net, input_size=(1, 224, 224))
 
-    epochs = 150
-    best_acc = 0.0
-    save_path = './{}Net.pth'.format(model_name)
-    train_steps = len(train_loader)
-    for epoch in range(epochs):
-        # train
-        net.train()
-        running_loss = 0.0
-        train_bar = tqdm(train_loader, file=sys.stdout)
-        for step, data in enumerate(train_bar):
-            images, labels = data
-            optimizer.zero_grad()
-            outputs = net(images.to(device))
-            loss = loss_function(outputs, labels.to(device))
-            loss.backward()
-            optimizer.step()
+    # full_dataset is your ConcatDataset object
+    all_labels = []
 
-            # print statistics
-            running_loss += loss.item()
+    for dataset in full_dataset.datasets:
+        # Check if the sub-dataset has targets (standard for ImageFolder)
+        if hasattr(dataset, 'targets'):
+            all_labels.extend(dataset.targets)
+        # Some datasets use .labels instead of .targets
+        elif hasattr(dataset, 'labels'):
+            all_labels.extend(dataset.labels)
+        else:
+            # Fallback: manually iterate if targets aren't exposed (slower)
+            print("Warning: Dataset doesn't have .targets attribute. Extracting manually...")
+            for _, label in dataset:
+                all_labels.append(label)
 
-            train_bar.desc = "train epoch[{}/{}] loss:{:.7f}".format(epoch + 1,
-                                                                     epochs,
-                                                                     loss)
+    all_labels = np.array(all_labels)
+    all_indices = np.arange(len(all_labels))
 
-        # validate
-        net.eval()
-        acc = 0.0  # accumulate accurate number / epoch
-        with torch.no_grad():
-            val_bar = tqdm(validate_loader, file=sys.stdout)
-            for val_data in val_bar:
-                val_images, val_labels = val_data
-                outputs = net(val_images.to(device))
-                predict_y = torch.max(outputs, dim=1)[1]
-                acc += torch.eq(predict_y, val_labels.to(device)).sum().item()
+    # Initialize StratifiedKFold
+    k_folds = 5
+    skf = StratifiedKFold(n_splits=k_folds, shuffle=True, random_state=42)
 
-        val_accurate = acc / val_num
-        print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
-              (epoch + 1, running_loss / train_steps, val_accurate))
+    # To store results across folds
+    fold_results = []
 
-        if val_accurate > best_acc:
-            best_acc = val_accurate
-            torch.save(net.state_dict(), save_path)
+    for fold, (train_ids, val_ids) in enumerate(skf.split(all_indices, all_labels)):
+        print(f"--- Fold {fold + 1}/{k_folds} ---")
+        
+        # Create Subsets for this fold
+        train_sub = Subset(full_dataset, train_ids)
+        val_sub = Subset(full_dataset, val_ids)
+        
+        # Create DataLoaders
+        train_loader = DataLoader(train_sub, batch_size=32, shuffle=True)
+        val_loader = DataLoader(val_sub, batch_size=32, shuffle=False)
+        
+
+        epochs = 150
+        best_acc = 0.0
+        save_path = './{}Net.pth'.format(model_name)
+        train_steps = len(train_loader)
+        for epoch in range(epochs):
+            # train
+            #net.train()
+            running_loss = 0.0
+            train_bar = tqdm(train_loader, file=sys.stdout)
+            for step, data in enumerate(train_bar):
+                images, labels = data
+                #optimizer.zero_grad()
+                #outputs = net(images.to(device))
+                #loss = loss_function(outputs, labels.to(device))
+                #loss.backward()
+                #optimizer.step()
+
+                # print statistics
+                #running_loss += loss.item()
+
+                #train_bar.desc = "train epoch[{}/{}] loss:{:.7f}".format(epoch + 1,                                                        epochs,loss)
+
+            # validate
+            #net.eval()
+            acc = 0.0  # accumulate accurate number / epoch
+            with torch.no_grad():
+                val_bar = tqdm(val_loader, file=sys.stdout)
+                for val_data in val_bar:
+                    val_images, val_labels = val_data
+                    #outputs = net(val_images.to(device))
+                    #predict_y = torch.max(outputs, dim=1)[1]
+                    #acc += torch.eq(predict_y, val_labels.to(device)).sum().item()
+
+            val_accurate = acc / val_num
+            print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
+                (epoch + 1, running_loss / train_steps, val_accurate))
+
+            if val_accurate > best_acc:
+                best_acc = val_accurate
+                #torch.save(net.state_dict(), save_path)
 
     print('Finished Training')
 
