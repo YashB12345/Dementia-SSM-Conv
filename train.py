@@ -120,6 +120,10 @@ def main():
     # To store results across folds
     fold_results = []
 
+    epochs = 25
+    best_acc = 0.0
+    save_path = './{}Net.pth'.format(model_name)
+
     for fold, (train_ids, val_ids) in enumerate(skf.split(all_indices, all_labels)):
         print(f"--- Fold {fold + 1}/{k_folds} ---")
         
@@ -131,10 +135,6 @@ def main():
         train_loader = DataLoader(train_sub, batch_size=32, shuffle=True)
         val_loader = DataLoader(val_sub, batch_size=32, shuffle=False)
     
-
-        epochs = 150
-        best_acc = 0.0
-        save_path = './{}Net.pth'.format(model_name)
         train_steps = len(train_loader)
         for epoch in range(epochs):
             # train
