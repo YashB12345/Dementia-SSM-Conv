@@ -152,9 +152,7 @@ def main():
                 # print statistics
                 running_loss += loss.item()
 
-                train_bar.desc = "train epoch[{}/{}] loss:{:.7f}".format(epoch + 1,
-                                                                        epochs,
-                                                                        loss)
+                #train_bar.desc = "train epoch[{}/{}] loss:{:.7f}".format(epoch + 1,epochs,loss)
 
             # validate
             net.eval()
