@@ -122,6 +122,7 @@ def main():
 
     epochs = 25
     best_acc = 0.0
+    best_loss = 1.0
     save_path = './{}Net.pth'.format(model_name)
 
     for fold, (train_ids, val_ids) in enumerate(skf.split(all_indices, all_labels)):
@@ -169,8 +170,9 @@ def main():
             print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
                 (epoch + 1, running_loss / train_steps, val_accurate))
 
-            if val_accurate > best_acc:
+            if (val_accurate > best_acc || (running_loss / train_steps) < best_loss):
                 best_acc = val_accurate
+                best_loss = train_loss
                 torch.save(net.state_dict(), save_path)
 
     print('Finished Training')
