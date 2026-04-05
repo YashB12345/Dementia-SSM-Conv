@@ -31,7 +31,7 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1-5t-axial-2to2-antspynet-flirt-n4-6013'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1-5t-coronal-2to2-antspynet-flirt-n4-4452sam'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -120,7 +120,7 @@ def main():
     # To store results across folds
     fold_results = []
 
-    epochs = 20
+    epochs = 25
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
 
