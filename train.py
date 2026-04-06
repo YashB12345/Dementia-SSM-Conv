@@ -170,7 +170,7 @@ def main():
             print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
                 (epoch + 1, running_loss / train_steps, val_accurate))
 
-            if (val_accurate > best_acc || (running_loss / train_steps) < best_loss):
+            if (val_accurate > best_acc  or (running_loss / train_steps) < best_loss):
                 best_acc = val_accurate
                 best_loss = train_loss
                 torch.save(net.state_dict(), save_path)
