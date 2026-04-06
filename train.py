@@ -172,7 +172,7 @@ def main():
 
             if (val_accurate > best_acc  or (running_loss / train_steps) < best_loss):
                 best_acc = val_accurate
-                best_loss = train_loss
+                best_loss = running_loss / train_steps
                 torch.save(net.state_dict(), save_path)
 
     print('Finished Training')
