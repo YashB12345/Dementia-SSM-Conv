@@ -92,7 +92,7 @@ def main():
     save_path = './{}Net.pth'.format(model_name)
     net = VSSM(num_classes=len(class_to_idx))
     net.to(device)
-    model.load_state_dict(torch.load("./VSSMNet.pth", map_location=device))
+    net.load_state_dict(torch.load("./VSSMNet.pth", map_location=device))
     
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
