@@ -89,8 +89,11 @@ def main():
                                                                            val_num, len(class_to_idx)))
 
     model_name = "VSSM"
+    save_path = './{}Net.pth'.format(model_name)
     net = VSSM(num_classes=len(class_to_idx))
     net.to(device)
+    model.load_state_dict(torch.load("./VSSMNet.pth", map_location=device))
+    
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
@@ -123,7 +126,7 @@ def main():
     epochs = 25
     best_acc = 0.0
     best_loss = 1.0
-    save_path = './{}Net.pth'.format(model_name)
+
 
     for fold, (train_ids, val_ids) in enumerate(skf.split(all_indices, all_labels)):
         print(f"--- Fold {fold + 1}/{k_folds} ---")
