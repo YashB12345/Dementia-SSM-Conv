@@ -69,8 +69,8 @@ def main():
         full_dataset, [train_size, val_size, test_size]
     )
 
-    train_dataset = train_dataset.mean(dim=1, keepdim=True)
-    val_dataset = val_dataset.mean(dim=1, keepdim=True)
+    #train_dataset = train_dataset.mean(dim=1, keepdim=True)
+    #val_dataset = val_dataset.mean(dim=1, keepdim=True)
     #test_dataset = test_dataset.mean(dim=1, keepdim=True)
 
     # 4. Create DataLoaders for each split
