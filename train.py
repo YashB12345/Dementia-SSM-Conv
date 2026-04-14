@@ -14,6 +14,19 @@ from torchsummary import summary
 from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
 
+class FocalLoss(nn.Module):
+    def __init__(self, gamma=2):
+        super().__init__()
+        self.gamma = gamma
+
+    def forward(self, inputs, targets):
+        ce_loss = F.cross_entropy(inputs, targets, reduction='none')
+        pt = torch.exp(-ce_loss)
+        return ((1 - pt) ** self.gamma * ce_loss).mean()
+
+def is_valid_image(img):
+    return not torch.isnan(img).any() and img.std() > 1e-5
+
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
@@ -66,7 +79,7 @@ def main():
 
     # 3. Perform the random split
     train_dataset, val_dataset, test_dataset = random_split(
-        full_dataset, [train_size, val_size, test_size]
+        orig_dataset, [train_size, val_size, test_size]
     )
 
     #train_dataset = train_dataset.mean(dim=1, keepdim=True)
@@ -95,7 +108,7 @@ def main():
     model_name = "VSSM"
     net = VSSM(num_classes=len(class_to_idx))
     net.to(device)
-    loss_function = nn.CrossEntropyLoss()
+    loss_function = FocalLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
     #summary(net, input_size=(1, 224, 224))
