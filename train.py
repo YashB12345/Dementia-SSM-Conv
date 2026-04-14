@@ -13,6 +13,21 @@ from tqdm import tqdm
 from torchsummary import summary
 from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
+import torch.nn.functional as F
+
+def get_embeddings(model, images):
+    # VSSM typically supports forward_features
+    features = model.forward_features(images)
+    return features.view(features.size(0), -1)
+
+
+def filter_batch(model, images, labels, centroid, threshold):
+    emb = get_embeddings(model, images)
+    distances = torch.norm(emb - centroid, dim=1)
+
+    mask = distances < threshold  # ✅ THIS FILTERS OUTLIERS
+
+    return images[mask], labels[mask], mask
 
 class FocalLoss(nn.Module):
     def __init__(self, gamma=2):
@@ -26,6 +41,31 @@ class FocalLoss(nn.Module):
 
 def is_valid_image(img):
     return not torch.isnan(img).any() and img.std() > 1e-5
+
+def compute_embedding_threshold(model, train_loader, device, percentile=0.9):
+    model.eval()
+    all_embeddings = []
+
+    with torch.no_grad():
+        for images, _ in train_loader:
+            images = images.to(device)
+
+            # 👇 IMPORTANT: adjust this to your model
+            features = model.forward_features(images)  
+            embeddings = features.view(features.size(0), -1)
+
+            all_embeddings.append(embeddings.cpu())
+
+    all_embeddings = torch.cat(all_embeddings)
+
+    centroid = all_embeddings.mean(dim=0)
+
+    distances = torch.norm(all_embeddings - centroid, dim=1)
+
+    threshold = torch.quantile(distances, percentile)
+
+    return centroid.to(device), threshold.to(device)
+    
 
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -117,6 +157,15 @@ def main():
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
+
+    print("Computing embedding threshold...")
+
+    centroid, threshold = compute_embedding_threshold(
+        net, train_loader, device, percentile=0.9
+    )
+    
+    print("Threshold:", threshold.item())
+
     for epoch in range(epochs):
         # train
         net.train()
@@ -145,9 +194,28 @@ def main():
             val_bar = tqdm(validate_loader, file=sys.stdout)
             for val_data in val_bar:
                 val_images, val_labels = val_data
-                outputs = net(val_images.to(device))
+                
+                val_images = val_images.to(device)
+                val_labels = val_labels.to(device)
+
+                # 🔥 --- FILTER OUT BAD EMBEDDINGS ---
+                val_images, val_labels, mask = filter_batch(
+                    net, val_images, val_labels, centroid, threshold
+                )
+                
+                removed = (~mask).sum().item()
+                if removed > 0:
+                    print(f"Filtered {removed} samples")
+                
+                # Skip if all removed
+                if val_images.size(0) == 0:
+                    continue
+                
+                # Normal forward pass
+                outputs = net(val_images)
                 predict_y = torch.max(outputs, dim=1)[1]
-                acc += torch.eq(predict_y, val_labels.to(device)).sum().item()
+                
+                acc += torch.eq(predict_y, val_labels).sum().item()
 
         val_accurate = acc / val_num
         print('[epoch %d] train_loss: %.7f  val_accuracy: %.7f' %
