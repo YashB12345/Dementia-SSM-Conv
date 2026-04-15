@@ -23,6 +23,14 @@ except:
 
 DropPath.__repr__ = lambda self: f"timm.DropPath({self.drop_prob})"
 
+def forward(self, x, return_features=False):
+    features = self.backbone(x)
+
+    if return_features:
+        return features
+
+    out = self.classifier(features)
+    return out
 
 def flops_selective_scan_ref(B=1, L=256, D=768, N=16, with_D=True, with_Z=False, with_Group=True, with_complex=False):
     """
