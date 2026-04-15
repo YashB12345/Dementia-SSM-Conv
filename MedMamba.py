@@ -23,14 +23,6 @@ except:
 
 DropPath.__repr__ = lambda self: f"timm.DropPath({self.drop_prob})"
 
-def forward(self, x, return_features=False):
-    features = self.backbone(x)
-
-    if return_features:
-        return features
-
-    out = self.classifier(features)
-    return out
 
 def flops_selective_scan_ref(B=1, L=256, D=768, N=16, with_D=True, with_Z=False, with_Group=True, with_complex=False):
     """
@@ -756,11 +748,17 @@ class VSSM(nn.Module):
             x = layer(x)
         return x
 
-    def forward(self, x):
-        x = self.forward_backbone(x)
-        x = x.permute(0,3,1,2)
-        x = self.avgpool(x)
-        x = torch.flatten(x,start_dim=1)
+    def forward(self, x, return_features=False):
+        x = self.patch_embed(x)
+        x = self.layers(x)
+        x = self.norm(x)
+    
+        # 👉 THIS is your embedding
+        features = x
+    
+        if return_features:
+            return features
+    
         x = self.head(x)
         return x
 
