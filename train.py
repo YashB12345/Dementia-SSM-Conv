@@ -105,14 +105,14 @@ def main():
     print('Using {} dataloader workers every process'.format(nw))
 
     #train_dataset = tf.data.Dataset.from_tensor_slices(train_x, train_y )
-    train_loader = torch.utils.data.DataLoader(full_dataset,
+    train_loader = torch.utils.data.DataLoader(orig_dataset,
                                                batch_size=batch_size, shuffle=True,
                                                num_workers=nw)
 
     # 2. Define split ratios and calculate lengths
-    train_size = int(0.9 * len(full_dataset))
-    val_size = int(0.1 * len(full_dataset))
-    test_size = len(full_dataset) - train_size - val_size # Adjust for any rounding issues
+    train_size = int(0.9 * len(orig_dataset))
+    val_size = int(0.1 * len(orig_dataset))
+    test_size = len(orig_dataset) - train_size - val_size # Adjust for any rounding issues
 
     # Ensure reproducibility with a fixed seed
     torch.manual_seed(42)
