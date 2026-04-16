@@ -750,10 +750,14 @@ class VSSM(nn.Module):
 
     def forward(self, x, return_features=False):
         x = self.patch_embed(x)
-        x = self.layers(x)
-        x = self.norm(x)
     
-        # 👉 THIS is your embedding
+        # ✅ FIX 1: iterate instead of calling ModuleList
+        for layer in self.layers:
+            x = layer(x)
+    
+        # ✅ FIX 2: only if you keep norm
+        # x = self.norm(x)
+    
         features = x
     
         if return_features:
