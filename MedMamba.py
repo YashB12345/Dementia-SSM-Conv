@@ -738,7 +738,7 @@ class VSSM(nn.Module):
     def no_weight_decay_keywords(self):
         return {'relative_position_bias_table'}
 
-    def forward_backbone(self, x):
+    def forward_features(self, x):
         x = self.patch_embed(x)
         if self.ape:
             x = x + self.absolute_pos_embed
@@ -749,14 +749,7 @@ class VSSM(nn.Module):
         return x
 
     def forward(self, x, return_features=False):
-        x = self.patch_embed(x)
-    
-        # ✅ FIX 1: iterate instead of calling ModuleList
-        for layer in self.layers:
-            x = layer(x)
-    
-        # ✅ FIX 2: only if you keep norm
-        # x = self.norm(x)
+        x = self.forward_features(x)
     
         features = x
     
