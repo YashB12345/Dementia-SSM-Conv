@@ -749,12 +749,18 @@ class VSSM(nn.Module):
         return x
 
     def forward(self, x, return_features=False):
-        x = self.forward_features(x)
-    
-        features = x
-    
+        x = self.forward_features(x)   # [B, H, W, C]
+
         if return_features:
-            return features
+            return x
+        # 👉 convert to [B, C, H, W]
+        x = x.permute(0, 3, 1, 2)
+        
+        # 👉 global average pooling → [B, C, 1, 1]
+        x = self.avgpool(x)
+        
+        # 👉 flatten → [B, C]
+        x = torch.flatten(x, 1)
     
         x = self.head(x)
         return x
