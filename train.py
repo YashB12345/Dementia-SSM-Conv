@@ -14,6 +14,24 @@ from torchsummary import summary
 from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
 
+class VerticalStripCrop:
+    def __init__(self, num_fractions=4, fraction_index=1):
+        """
+        fraction_index is 0-indexed (0=1st, 1=2nd, etc.)
+        """
+        self.num_fractions = num_fractions
+        self.fraction_index = fraction_index
+
+    def __call__(self, tensor):
+        # Get the width of the tensor (C, H, W)
+        w = tensor.shape[-1]
+        fraction_width = w // self.num_fractions
+        
+        start = self.fraction_index * fraction_width
+        end = (self.fraction_index + 1) * fraction_width
+        
+        return tensor[..., start:end]
+        
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
@@ -21,13 +39,19 @@ def main():
     data_transform = {
         "train": transforms.Compose([transforms.CenterCrop(224),         # Crop 224x224 patch
                                      transforms.ToTensor(),
+                                     VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                     transforms.Resize((224, 224)),
                                      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
         "flip": transforms.Compose([  transforms.CenterCrop(224),         # Crop 224x224 patch
                                      transforms.RandomHorizontalFlip(p=1),
                                      transforms.ToTensor(),
+                                     VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                     transforms.Resize((224, 224)),
                                      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
         "val": transforms.Compose([transforms.CenterCrop(224),         # Crop 224x224 patch
                                    transforms.ToTensor(),
+                                   VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                   transforms.Resize((224, 224)),
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
