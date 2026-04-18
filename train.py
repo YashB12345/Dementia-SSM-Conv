@@ -39,18 +39,18 @@ def main():
     data_transform = {
         "train": transforms.Compose([transforms.CenterCrop(224),         # Crop 224x224 patch
                                      transforms.ToTensor(),
-                                     VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                     VerticalStripCrop(num_fractions=4, fraction_index=1), # Gets the 1nd fraction
                                      transforms.Resize((224, 224)),
                                      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
         "flip": transforms.Compose([  transforms.CenterCrop(224),         # Crop 224x224 patch
                                      transforms.RandomHorizontalFlip(p=1),
                                      transforms.ToTensor(),
-                                     VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                     VerticalStripCrop(num_fractions=4, fraction_index=1), # Gets the 1nd fraction
                                      transforms.Resize((224, 224)),
                                      transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]),
         "val": transforms.Compose([transforms.CenterCrop(224),         # Crop 224x224 patch
                                    transforms.ToTensor(),
-                                   VerticalStripCrop(num_fractions=4, fraction_index=0), # Gets the 1nd fraction
+                                   VerticalStripCrop(num_fractions=4, fraction_index=1), # Gets the 1nd fraction
                                    transforms.Resize((224, 224)),
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
