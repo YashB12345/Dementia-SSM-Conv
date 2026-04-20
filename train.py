@@ -131,7 +131,7 @@ def main():
 
     epochs = 100
     if(len(sys.argv) > 2):
-        epochs = sys.argv[6]
+        epochs = int(sys.argv[6])
 
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
