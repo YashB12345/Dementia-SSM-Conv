@@ -59,7 +59,7 @@ def main():
 
     DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni1-1yr-1-5t-1571sam-antspynet-coronal-central'
 
-    if(len(sys.argv) > 2)
+    if(len(sys.argv) > 2):
         DATA_SET_PATH = sys.argv[2]
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
@@ -130,7 +130,7 @@ def main():
     #summary(net, input_size=(1, 224, 224))
 
     epochs = 100
-    if(len(sys.argv) > 2)
+    if(len(sys.argv) > 2):
         epochs = sys.argv[6]
 
     best_acc = 0.0
