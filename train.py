@@ -33,6 +33,8 @@ class VerticalStripCrop:
         return tensor[..., start:end]
         
 def main():
+    print(sys.argv)
+    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
 
@@ -55,7 +57,10 @@ def main():
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
 
-    DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni1-1yr-1-5t-1571sam-antspynet-coronal-central'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni1-1yr-1-5t-1571sam-antspynet-coronal-central'
+
+    if(len(sys.argv) > 2)
+        DATA_SET_PATH = sys.argv[2]
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -125,6 +130,9 @@ def main():
     #summary(net, input_size=(1, 224, 224))
 
     epochs = 100
+    if(len(sys.argv) > 2)
+        epochs = sys.argv[6]
+
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
