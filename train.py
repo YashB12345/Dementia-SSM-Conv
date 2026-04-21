@@ -32,6 +32,8 @@ def main():
 
 
     DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni1-1yr-1-5t-1571sam-antspynet-coronal-central'
+    if(len(sys.argv) > 2):
+        DATA_SET_PATH = sys.argv[2]
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
@@ -101,6 +103,9 @@ def main():
     #summary(net, input_size=(1, 224, 224))
 
     epochs = 100
+    if(len(sys.argv) > 6):
+        epochs = int(sys.argv[6])
+
     best_acc = 0.0
     save_path = './{}Net.pth'.format(model_name)
     train_steps = len(train_loader)
