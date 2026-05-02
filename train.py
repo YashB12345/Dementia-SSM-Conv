@@ -28,7 +28,7 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/higher-loss-precision-with-3244samples-sagittal'
+    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1-5t-axial-5to5-ants-flirt-n4-8910samples'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
