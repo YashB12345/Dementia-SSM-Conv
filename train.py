@@ -28,14 +28,21 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
-    DATA_SET_PATH = '/kaggle/input/datasets/yfinity/adni-1-5t-axial-5to5-ants-flirt-n4-8910samples'
+    DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-2to2-antst-flirt-n4correct-3450'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
     flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    full_dataset = ConcatDataset([orig_dataset, flip_dataset])
+    SECOND_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-2to2-antspynet-flirt-n4-6013'
+
+    second_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
+                                         transform=data_transform["train"])
+    second_flip_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
+                                         transform=data_transform["flip"])
+
+    full_dataset = ConcatDataset([orig_dataset, second_dataset])
 
     class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
