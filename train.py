@@ -12,6 +12,9 @@ from torchsummary import summary
 from MedMamba import VSSM
 from torch.utils.data import Dataset, DataLoader, random_split
 
+def include_masks(path):
+    return path.endswith("0_axial_flirt.png") or path.endswith("0.png") or path.endswith("1.png") or path.endswith("2.png") 
+
 def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("using {} device.".format(device))
@@ -45,7 +48,14 @@ def main():
     second_flip_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    full_dataset = ConcatDataset([orig_dataset, second_dataset])
+    THIRD_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-5to5-ants-flirt-b350-2776samp'
+    third_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
+                                         transform=data_transform["train"]
+                                         ,is_valid_file=include_masks)
+    third_flip_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
+                                         transform=data_transform["flip"])
+
+    full_dataset = ConcatDataset([orig_dataset, second_dataset, third_dataset])
 
     class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
