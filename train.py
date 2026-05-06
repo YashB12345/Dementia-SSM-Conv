@@ -48,7 +48,7 @@ def main():
     second_flip_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    THIRD_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-5to5-ants-flirt-b350-2776samp'
+    THIRD_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-5to5-ants-flirt-b350-4818sam'
     third_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
                                          transform=data_transform["train"]
                                          ,is_valid_file=include_masks)
