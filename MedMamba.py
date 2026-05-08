@@ -503,14 +503,15 @@ class SS_Conv_SSM(nn.Module):
         self.ln_1 = norm_layer(hidden_dim//2)
         self.self_attention = SS2D(d_model=hidden_dim//2, dropout=attn_drop_rate, d_state=d_state, **kwargs)
         self.drop_path = DropPath(drop_path)
-
+        self.dropout = nn.Dropout(0.3)
+        
         self.conv33conv33conv11 = nn.Sequential(
-            nn.BatchNorm2d(hidden_dim // 2),
+            nn.InstanceNorm2d(hidden_dim // 2),
             nn.Conv2d(in_channels=hidden_dim//2,out_channels=hidden_dim//2,kernel_size=3,stride=1,padding=1),
-            nn.BatchNorm2d(hidden_dim//2),
+            nn.InstanceNorm2d(hidden_dim//2),
             nn.ReLU(),
             nn.Conv2d(in_channels=hidden_dim // 2, out_channels=hidden_dim // 2, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(hidden_dim // 2),
+            nn.InstanceNorm2d(hidden_dim // 2),
             nn.ReLU(),
             nn.Conv2d(in_channels=hidden_dim // 2, out_channels=hidden_dim // 2, kernel_size=1, stride=1),
             nn.ReLU()
