@@ -16,7 +16,8 @@ def include_masks(path):
     return path.endswith("0_axial_flirt.png") or path.endswith("0.png") or path.endswith("1.png") or path.endswith("2.png") 
 
 def main():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    os.environ['PYTORCH_MPS_HIGH_WATERMARK_RATIO'] = '0.0'
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     print("using {} device.".format(device))
 
     data_transform = {
@@ -34,28 +35,28 @@ def main():
                                    transforms.ToTensor(),
                                    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])}
 
-    DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-2to2-antst-flirt-n4correct-3450'
+    DATA_SET_PATH = '~/Downloads/1.5T_coronal-2to2_antspynet_flirt_N4_B180'
 
     orig_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["train"])
     flip_dataset = datasets.ImageFolder(root=DATA_SET_PATH,
                                          transform=data_transform["flip"])
 
-    SECOND_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-2to2-antspynet-flirt-n4-6013'
+#    SECOND_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-2to2-antspynet-flirt-n4-6013'
 
-    second_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
-                                         transform=data_transform["train"])
-    second_flip_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
-                                         transform=data_transform["flip"])
+#    second_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
+#                                         transform=data_transform["train"])
+#    second_flip_dataset = datasets.ImageFolder(root=SECOND_DATA_SET_PATH,
+#                                         transform=data_transform["flip"])
 
-    THIRD_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-5to5-ants-flirt-b350-4818sam'
-    third_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
-                                         transform=data_transform["train"]
-                                         ,is_valid_file=include_masks)
-    third_flip_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
-                                         transform=data_transform["flip"])
+#    THIRD_DATA_SET_PATH = '/kaggle/input/datasets/rajab23456/adni-1-5t-axial-5to5-ants-flirt-b350-4818sam'
+#    third_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
+#                                         transform=data_transform["train"]
+#                                         ,is_valid_file=include_masks)
+#    third_flip_dataset = datasets.ImageFolder(root=THIRD_DATA_SET_PATH,
+#                                         transform=data_transform["flip"])
 
-    full_dataset = ConcatDataset([orig_dataset, second_dataset, third_dataset])
+    full_dataset = ConcatDataset([orig_dataset, flip_dataset])
 
     class_to_idx = orig_dataset.class_to_idx
     cla_dict = dict((val, key) for key, val in class_to_idx.items())
