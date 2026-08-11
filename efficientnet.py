@@ -10,7 +10,12 @@ import torch.optim as optim
 from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader
 
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm
+import torch.nn.functional as F
 
 # =========================================================
 # CONFIG
@@ -380,3 +385,165 @@ print(classification_report(
     all_preds,
     target_names=class_names
 ))
+
+# =========================================================
+# CONFUSION MATRIX
+# =========================================================
+
+cm_array = confusion_matrix(all_labels, all_preds)
+
+print("\nConfusion Matrix:\n")
+print(cm_array)
+
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm_array,
+    display_labels=class_names
+)
+
+fig_cm, ax_cm = plt.subplots(figsize=(6, 6))
+disp.plot(ax=ax_cm, cmap="Blues", colorbar=True, values_format="d")
+ax_cm.set_title("EfficientNet B0 - Confusion Matrix")
+plt.tight_layout()
+plt.savefig("confusion_matrix_efficientnet.png", dpi=200, bbox_inches="tight")
+plt.show()
+print("Saved confusion_matrix_efficientnet.png")
+
+# =========================================================
+# GRAD-CAM
+# =========================================================
+# Target layer: model.features[-1] is the last conv block in
+# EfficientNet B0 (1x1 conv -> 1280 channels), producing a
+# [B, 1280, 7, 7] spatial feature map for 224x224 input -- this
+# is the last tensor before AdaptiveAvgPool2d collapses it.
+
+class GradCAM:
+    def __init__(self, model, target_layer):
+        self.model = model
+        self.target_layer = target_layer
+        self.gradients = None
+        self.activations = None
+
+        target_layer.register_forward_hook(self._save_activation)
+        target_layer.register_full_backward_hook(self._save_gradient)
+
+    def _save_activation(self, module, input, output):
+        self.activations = output.detach()
+
+    def _save_gradient(self, module, grad_input, grad_output):
+        self.gradients = grad_output[0].detach()
+
+    def generate(self, input_tensor, target_class):
+        self.model.zero_grad()
+        output = self.model(input_tensor)          # (1, num_classes)
+        score = output[0, target_class]
+        score.backward(retain_graph=True)
+
+        gradients = self.gradients[0]               # (C, H, W)
+        activations = self.activations[0]            # (C, H, W)
+
+        weights = gradients.mean(dim=(1, 2))          # (C,)
+
+        cam = torch.zeros(activations.shape[1:], device=activations.device)
+        for i, w in enumerate(weights):
+            cam += w * activations[i]
+
+        cam = F.relu(cam)
+        cam = cam - cam.min()
+        cam = cam / (cam.max() + 1e-8)
+        return cam.cpu().numpy()
+
+
+def unnormalize(img_tensor):
+    """Reverse ImageNet normalization for display. img_tensor: (C, H, W)."""
+    mean = torch.tensor([0.485, 0.456, 0.406]).view(3, 1, 1)
+    std = torch.tensor([0.229, 0.224, 0.225]).view(3, 1, 1)
+    img = img_tensor.cpu() * std + mean
+    img = img.clamp(0, 1).permute(1, 2, 0).numpy()
+    return img
+
+
+def overlay_cam_on_image(rgb_image, cam, alpha=0.4):
+    """rgb_image: (H, W, 3) in [0,1]. cam: (h, w) in [0,1], any spatial size."""
+    cam_resized = np.array(
+        F.interpolate(
+            torch.tensor(cam)[None, None, ...],
+            size=rgb_image.shape[:2],
+            mode="bilinear",
+            align_corners=False
+        )[0, 0]
+    )
+    heatmap = cm.jet(cam_resized)[..., :3]
+    overlay = (1 - alpha) * rgb_image + alpha * heatmap
+    return np.clip(overlay, 0, 1)
+
+
+def plot_per_class_gradcam(model, input_tensor, rgb_image, class_names,
+                            target_layer, true_label=None, pred_label=None,
+                            save_path=None):
+    gradcam = GradCAM(model, target_layer)
+
+    fig, axes = plt.subplots(1, len(class_names) + 1, figsize=(4 * (len(class_names) + 1), 4))
+
+    axes[0].imshow(rgb_image)
+    axes[0].set_title("Original")
+    axes[0].axis("off")
+
+    for i, cls_name in enumerate(class_names):
+        cam = gradcam.generate(input_tensor, target_class=i)
+        overlay = overlay_cam_on_image(rgb_image, cam)
+
+        axes[i + 1].imshow(overlay)
+        axes[i + 1].set_title(f"{cls_name}-targeted CAM")
+        axes[i + 1].axis("off")
+
+    suptitle = ""
+    if true_label is not None:
+        suptitle += f"True: {class_names[true_label]}  "
+    if pred_label is not None:
+        suptitle += f"Pred: {class_names[pred_label]}"
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=12)
+
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=200, bbox_inches="tight")
+    plt.show()
+
+
+# Grad-CAM needs gradients, so re-enable them even though we're
+# past the torch.no_grad() eval block above.
+model.eval()
+target_layer = model.features[-1]
+
+# Pick one representative test image per class (first match found)
+shown_classes = set()
+num_gradcam_examples = num_classes  # one per class
+
+for images, labels in test_loader:
+    for i in range(images.size(0)):
+        label = labels[i].item()
+        if label in shown_classes:
+            continue
+
+        input_tensor = images[i:i+1].clone().to(DEVICE)
+        input_tensor.requires_grad_(False)  # gradients w.r.t. activations only, not input
+
+        with torch.enable_grad():
+            output = model(input_tensor)
+            pred_label = output.argmax(dim=1).item()
+
+        rgb_image = unnormalize(images[i])
+
+        save_path = f"gradcam_{class_names[label]}_example.png"
+        plot_per_class_gradcam(
+            model, input_tensor, rgb_image, class_names,
+            target_layer=target_layer,
+            true_label=label, pred_label=pred_label,
+            save_path=save_path
+        )
+        print(f"Saved {save_path}")
+
+        shown_classes.add(label)
+
+    if len(shown_classes) == num_gradcam_examples:
+        break
