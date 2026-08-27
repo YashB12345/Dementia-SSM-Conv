@@ -27,6 +27,9 @@ import torch.nn.functional as F
 # =========================================================
 
 ORIGINAL_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/1Yr/Axis0/temp"
+
+YR2_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/temp"
+
 # Structure:
 # original_dataset/
 #    class1/
@@ -92,10 +95,12 @@ def create_data_splits():
 
         class_path = original_dir / class_name
 
+        path_two = Path(YR2_DATASET_DIR) / class_name
+
         if not class_path.is_dir():
             continue
 
-        images = list(class_path.glob("*"))
+        images = list(class_path.glob("*")) + list(path_two.glob("*"))
 
         random.shuffle(images)
 
