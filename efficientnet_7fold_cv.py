@@ -72,14 +72,32 @@ full_dataset = datasets.ImageFolder(
     transform=test_transform
 )
 
-class_names = full_dataset.classes
+
+full_dataset_1yr = datasets.ImageFolder(
+    root=ORIGINAL_DATASET_DIR,
+    transform=test_transform
+)
+ 
+full_dataset_2yr = datasets.ImageFolder(
+    root="/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/ADNI2YR_N4RBFFN_sagittal_pruned_405",
+    transform=test_transform
+)
+ 
+full_dataset = ConcatDataset([full_dataset_1yr, full_dataset_2yr])
+
+class_names = full_dataset_1yr.classes
 num_classes = len(class_names)
 
 print(f"\nClasses: {class_names}")
 print(f"Total samples: {len(full_dataset)}\n")
 
 # Extract labels for stratification
-labels = np.array([label for _, label in full_dataset.samples])
+labels = []
+for idx in range(len(full_dataset)):
+    # Get the label from the underlying dataset
+    sample, label = full_dataset[idx]
+    labels.append(label)
+labels = np.array(labels)
 
 # Shuffle dataset indices
 shuffle_indices = np.random.permutation(len(full_dataset))
