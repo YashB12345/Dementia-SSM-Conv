@@ -29,7 +29,7 @@ BATCH_SIZE = 32
 NUM_EPOCHS = 25
 LEARNING_RATE = 0.001
 RANDOM_SEED = 42
-N_SPLITS = 7
+N_SPLITS = 3
 
 DEVICE = torch.device(
     "mps" if torch.backends.mps.is_available() else "cpu"
@@ -355,7 +355,7 @@ disp = ConfusionMatrixDisplay(
  
 fig_cm, ax_cm = plt.subplots(figsize=(8, 8))
 disp.plot(ax=ax_cm, cmap="Blues", colorbar=True, values_format="d")
-ax_cm.set_title("EfficientNet B0 - 7-Fold Cross-Validation Confusion Matrix")
+ax_cm.set_title(f"EfficientNet B0 - {N_SPLITS}-Fold Cross-Validation Confusion Matrix")
 plt.tight_layout()
 plt.savefig("confusion_matrix_7fold_efficientnet.png", dpi=200, bbox_inches="tight")
 plt.show()
@@ -515,5 +515,7 @@ for images, labels in test_loader_aug:
         break
  
 print("\n" + "="*70)
-print("Finished 7-Fold Stratified Cross-Validation Analysis")
+print(f"Finished {N_SPLITS}-Fold Stratified Cross-Validation Analysis")
 print("="*70)
+
+
