@@ -26,9 +26,9 @@ import torch.nn.functional as F
 # CONFIG
 # =========================================================
 
-ORIGINAL_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/1Yr/Axis0/temp"
+ORIGINAL_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/1Yr/Axis0/ADNI1YR_N4RBFFN_sagittal_985_pruned"
 
-YR2_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/temp"
+YR2_DATASET_DIR = "/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/ADNI2YR_N4RBFFN_sagittal_580"
 
 # Structure:
 # original_dataset/

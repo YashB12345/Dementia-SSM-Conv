@@ -63,9 +63,11 @@ full_dataset_1yr = datasets.ImageFolder(
     root=ORIGINAL_DATASET_DIR,
     transform=test_transform
 )
+
+
  
 full_dataset_2yr = datasets.ImageFolder(
-    root="/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/ADNI2YR_N4RBFFN_sagittal_pruned_405",
+    root="/Users/yashbanerjee/Pythonprojects/ReadADNIMAC/2Yr/Axis0/ADNI2YR_N4RBFFN_sagittal_580",
     transform=test_transform
 )
  
