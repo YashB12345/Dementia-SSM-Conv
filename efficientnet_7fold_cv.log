@@ -1,0 +1,180 @@
+
+(.venv) yashbanerjee@Rajas-Mac-Studio Dementia-SSM-Conv % python3 efficientnet_7fold_cv.py
+Loading dataset...
+
+Classes: ['AD', 'CN', 'MCI']
+Total samples: 1557
+
+Class distribution:
+  AD: 273 samples
+
+  CN: 411 samples
+
+  MCI: 873 samples
+
+
+Starting 7-Fold Stratified Cross-Validation
+
+======================================================================
+
+FOLD 1/7
+----------------------------------------------------------------------
+Train: 933, Val: 401, Test: 223
+Epoch 5/25 | Train Loss: 0.3435, Train Acc: 0.8617 | Val Loss: 0.6147, Val Acc: 0.7681
+Epoch 10/25 | Train Loss: 0.3003, Train Acc: 0.8950 | Val Loss: 0.6765, Val Acc: 0.7880
+Epoch 15/25 | Train Loss: 0.0528, Train Acc: 0.9786 | Val Loss: 0.7607, Val Acc: 0.8354
+Epoch 20/25 | Train Loss: 0.2414, Train Acc: 0.9175 | Val Loss: 0.6773, Val Acc: 0.7880
+Epoch 25/25 | Train Loss: 0.0229, Train Acc: 0.9925 | Val Loss: 0.7283, Val Acc: 0.8554
+/Users/yashbanerjee/Pythonprojects/Dementia-SSM-Conv/efficientnet_7fold_cv.py:306: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  model.load_state_dict(torch.load(fold_save_path))
+
+Fold 1 Test Accuracy: 0.8609865
+
+FOLD 2/7
+----------------------------------------------------------------------
+Train: 933, Val: 401, Test: 223
+Epoch 5/25 | Train Loss: 0.2246, Train Acc: 0.9218 | Val Loss: 0.5770, Val Acc: 0.8279
+Epoch 10/25 | Train Loss: 0.1710, Train Acc: 0.9389 | Val Loss: 0.9217, Val Acc: 0.8379
+Epoch 15/25 | Train Loss: 0.0771, Train Acc: 0.9775 | Val Loss: 0.8669, Val Acc: 0.8504
+Epoch 20/25 | Train Loss: 0.0406, Train Acc: 0.9893 | Val Loss: 0.6385, Val Acc: 0.8554
+Epoch 25/25 | Train Loss: 0.1907, Train Acc: 0.9357 | Val Loss: 0.5475, Val Acc: 0.8105
+
+Fold 2 Test Accuracy: 0.8968610
+
+FOLD 3/7
+----------------------------------------------------------------------
+Train: 933, Val: 401, Test: 223
+Epoch 5/25 | Train Loss: 0.5061, Train Acc: 0.8703 | Val Loss: 0.7204, Val Acc: 0.7606
+Epoch 10/25 | Train Loss: 0.0473, Train Acc: 0.9839 | Val Loss: 0.7092, Val Acc: 0.8130
+Epoch 15/25 | Train Loss: 0.0541, Train Acc: 0.9882 | Val Loss: 0.7114, Val Acc: 0.8529
+Epoch 20/25 | Train Loss: 0.0297, Train Acc: 0.9861 | Val Loss: 0.6600, Val Acc: 0.8753
+Epoch 25/25 | Train Loss: 0.1198, Train Acc: 0.9871 | Val Loss: 0.8236, Val Acc: 0.8279
+
+Fold 3 Test Accuracy: 0.8116592
+
+FOLD 4/7
+----------------------------------------------------------------------
+Train: 934, Val: 401, Test: 222
+Epoch 5/25 | Train Loss: 0.2607, Train Acc: 0.9004 | Val Loss: 0.6715, Val Acc: 0.8105
+Epoch 10/25 | Train Loss: 0.1847, Train Acc: 0.9400 | Val Loss: 0.5882, Val Acc: 0.8105
+Epoch 15/25 | Train Loss: 0.0816, Train Acc: 0.9872 | Val Loss: 0.8097, Val Acc: 0.8204
+Epoch 20/25 | Train Loss: 0.1150, Train Acc: 0.9604 | Val Loss: 0.8172, Val Acc: 0.8254
+Epoch 25/25 | Train Loss: 0.0091, Train Acc: 0.9989 | Val Loss: 0.7090, Val Acc: 0.8753
+
+Fold 4 Test Accuracy: 0.8648649
+
+FOLD 5/7
+----------------------------------------------------------------------
+Train: 934, Val: 401, Test: 222
+Epoch 5/25 | Train Loss: 0.1772, Train Acc: 0.9347 | Val Loss: 0.7475, Val Acc: 0.8055
+Epoch 10/25 | Train Loss: 0.1148, Train Acc: 0.9636 | Val Loss: 0.8928, Val Acc: 0.8180
+Epoch 15/25 | Train Loss: 0.0663, Train Acc: 0.9775 | Val Loss: 0.6806, Val Acc: 0.8678
+Epoch 20/25 | Train Loss: 0.0147, Train Acc: 0.9957 | Val Loss: 0.9273, Val Acc: 0.8429
+Epoch 25/25 | Train Loss: 0.0854, Train Acc: 0.9732 | Val Loss: 0.6167, Val Acc: 0.8429
+
+Fold 5 Test Accuracy: 0.8738739
+
+FOLD 6/7
+----------------------------------------------------------------------
+Train: 934, Val: 401, Test: 222
+Epoch 5/25 | Train Loss: 0.2396, Train Acc: 0.9090 | Val Loss: 0.8027, Val Acc: 0.7406
+Epoch 10/25 | Train Loss: 0.1772, Train Acc: 0.9315 | Val Loss: 0.8672, Val Acc: 0.8005
+Epoch 15/25 | Train Loss: 0.0843, Train Acc: 0.9732 | Val Loss: 0.7168, Val Acc: 0.8429
+Epoch 20/25 | Train Loss: 0.0397, Train Acc: 0.9893 | Val Loss: 0.7890, Val Acc: 0.8554
+Epoch 25/25 | Train Loss: 0.0329, Train Acc: 0.9904 | Val Loss: 0.9669, Val Acc: 0.8354
+
+Fold 6 Test Accuracy: 0.8513514
+
+FOLD 7/7
+----------------------------------------------------------------------
+Train: 934, Val: 401, Test: 222
+Epoch 5/25 | Train Loss: 0.2072, Train Acc: 0.9379 | Val Loss: 0.5308, Val Acc: 0.8429
+Epoch 10/25 | Train Loss: 0.0881, Train Acc: 0.9732 | Val Loss: 0.6867, Val Acc: 0.8204
+Epoch 15/25 | Train Loss: 0.0286, Train Acc: 0.9914 | Val Loss: 0.5511, Val Acc: 0.8878
+Epoch 20/25 | Train Loss: 0.0500, Train Acc: 0.9829 | Val Loss: 0.7218, Val Acc: 0.8304
+Epoch 25/25 | Train Loss: 0.0931, Train Acc: 0.9807 | Val Loss: 0.8067, Val Acc: 0.8504
+
+Fold 7 Test Accuracy: 0.8783784
+Keeping Fold 7 model for Grad-CAM visualization
+
+======================================================================
+
+Test Accuracy by Fold:
+  Fold 1: 0.8609865
+  Fold 2: 0.8968610
+  Fold 3: 0.8116592
+  Fold 4: 0.8648649
+  Fold 5: 0.8738739
+  Fold 6: 0.8513514
+  Fold 7: 0.8783784
+
+======================================================================
+7-FOLD STRATIFIED CROSS-VALIDATION FINAL RESULTS
+======================================================================
+
+Mean Test Accuracy:  0.8625679
+Std Dev:             0.0247245
+
+Accuracy Range: [0.8116592, 0.8968610]
+
+======================================================================
+AGGREGATE CLASSIFICATION REPORT (All Folds)
+======================================================================
+
+              precision    recall  f1-score   support
+
+          AD       0.84      0.75      0.79       273
+          CN       0.87      0.81      0.84       411
+         MCI       0.87      0.92      0.89       873
+
+    accuracy                           0.86      1557
+   macro avg       0.86      0.83      0.84      1557
+weighted avg       0.86      0.86      0.86      1557
+
+
+Aggregate Confusion Matrix (All Folds):
+
+[[204   9  60]
+ [ 12 334  65]
+ [ 27  41 805]]
+
+Saved confusion_matrix_7fold_efficientnet.png
+
+======================================================================
+ROC CURVES: All 7 Folds Overlapped
+======================================================================
+
+Saved roc_curves_7fold_by_class.png
+Saved roc_curve_macro_7fold.png
+
+======================================================================
+VALIDATION PROGRESS: All 7 Folds Overlapped by Epoch
+======================================================================
+
+Saved validation_progress_7fold_overlapped.png
+
+Validation Accuracy Statistics by Fold:
+Fold     Final Acc    Best Acc     Epochs to Best 
+--------------------------------------------------
+Fold 1   0.8554       0.8554       13             
+Fold 2   0.8105       0.8828       18             
+Fold 3   0.8279       0.8803       17             
+Fold 4   0.8753       0.8753       25             
+Fold 5   0.8429       0.8803       22             
+Fold 6   0.8354       0.8703       16             
+Fold 7   0.8504       0.8878       15             
+
+======================================================================
+GENERATING GRAD-CAM VISUALIZATIONS (from Fold 7 Best Model)
+======================================================================
+/Users/yashbanerjee/Pythonprojects/Dementia-SSM-Conv/efficientnet_7fold_cv.py:624: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  model_last.load_state_dict(torch.load("best_efficientnet_fold7.pth"))
+/Users/yashbanerjee/Pythonprojects/Dementia-SSM-Conv/efficientnet_7fold_cv.py:564: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+  cam_resized = np.array(
+Saved gradcam_7fold_AD_example.png
+Saved gradcam_7fold_CN_example.png
+Saved gradcam_7fold_MCI_example.png
+
+======================================================================
+Finished 7-Fold Stratified Cross-Validation Analysis
+======================================================================
